@@ -19,7 +19,7 @@ steps:
             | select(.version | contains("beta") | not) \
             | .version][-1]')
         else
-          VAULT_VERSION=<<parameters.vault_version>>
+          VAULT_VERSION=<<parameters.vault-version>>
         fi
 
         echo "Installing ${VAULT_VERSION} of vault"
