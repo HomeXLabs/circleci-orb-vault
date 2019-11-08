@@ -1,0 +1,32 @@
+description: >
+  Installs vault agent, if needed, and adds the path to PATH.
+  Can optionally spcify the version to be installed, however will not install if another version is already installed.
+
+parameters:
+  vault-version:
+    type: string
+    description: Install a specific version of vault.
+    default: latest
+
+steps:
+  - run:
+      name: Install Vault binary
+      command: |
+        if [[ "<<parameters.vault-version >>" == "latest"]]; then
+          VAULT_VERSION=$(curl -s https://releases.hashicorp.com/index.json \
+            | jq -r '[.[] | select(.name == "vault") | .versions[] \
+            | select(.version | contains("ent") | not) \
+            | select(.version | contains("beta") | not) \
+            | .version][-1]')
+        else
+          VAULT_VERSION=<<parameters.vault_version>>
+        fi
+
+        echo "Installing ${VAULT_VERSION} of vault"
+
+        curl -o vault.zip https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip
+        unzip vault.zip
+        mkdir ~/.vault/bin
+        mv vault ~/.vault/bin/
+
+        echo "export PATH=$PATH:~/bin/vault" >> $BASH_ENV

@@ -1,0 +1,26 @@
+description: Authenticates against Vault using AppRole token.
+
+parameters:
+  vault-addr:
+    type: string
+    description: Override VAULT_ADDR coming from context.
+    default: $VAULT_ADDR
+  vault-role-id:
+    type: env_var_name
+    description: Vault AppRole ID
+    default: VAULT_ROLE_ID
+  vault-secret-id:
+    type: env_var_name
+    description: Vault AppRole Secret ID
+    default: VAULT_SECRET_ID
+
+steps:
+  - run:
+      name: Login to Vault
+      command: |
+        VAULT_ADDR=<<parameters.vault-addr>>
+        vault write auth/approle/login \
+          role_id=$<<parameters.vault-role-id>> \
+          secret_id=$<<parameters.vault-secret-id>> \
+          -token-only -format=json \
+          | jq -r .token > ~/.vault_token
