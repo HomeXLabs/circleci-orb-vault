@@ -1,0 +1,13 @@
+version: 2.1
+orbs:
+  orb-tools: circleci/orb-tools@2.0.0
+
+workflows:
+  orb:
+    jobs:
+      - orb-tools/lint
+      - orb-tools/pack:
+          requires: [orb-tools/lint]
+      - orb-tools/publish-dev:
+          orb-name: homexlabs/vault
+          requires: [orb-tools/pack]

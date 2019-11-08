@@ -1,0 +1,105 @@
+commands:
+  get-aws-creds:
+    description: Retrieves AWS credentials and sets them as an AWS profile
+    parameters:
+      aws-region:
+        default: AWS_DEFAULT_REGION
+        description: |
+          Env var of AWS region to operate in
+          (defaults to AWS_DEFAULT_REGION)
+        type: env_var_name
+      configure-default-region:
+        default: true
+        description: |
+          Some AWS actions don't require a region; set this to false if you do not want to store a default region in ~/.aws/config
+        type: boolean
+      profile-name:
+        default: default
+        description: Profile name to be configured.
+        type: string
+      vault-addr:
+        default: $VAULT_ADDR
+        description: Override VAULT_ADDR coming from context.
+        type: string
+    steps:
+    - aws-cli/install
+    - run:
+        command: |
+          VAULT_AWS_CREDS=$(vault write << parameters.sts-vault-path >> -ttl=900s -format=json | jq .data)
+          aws configure set aws_access_key_id \
+            $(echo ${VAULT_AWS_CREDS} | jq -r .access_key) \
+            --profile <<parameters.profile-name>>
+          aws configure set aws_secret_access_key \
+            $(echo ${VAULT_AWS_CREDS} | jq -r .secret_key) \
+            --profile <<parameters.profile-name>>
+          unset VAULT_AWS_CREDS
+        name: Retrieve Credentials from Vault
+    - when:
+        condition: <<parameters.configure-default-region>>
+        steps:
+        - run:
+            command: |
+              aws configure set region $<<parameters.aws-region>> \
+              --profile <<parameters.profile-name>>
+            name: Configure AWS default region
+  install:
+    description: |
+      Installs vault agent, if needed, and adds the path to PATH. Can optionally spcify the version to be installed, however will not install if another version is already installed.
+    parameters:
+      vault-version:
+        default: latest
+        description: Install a specific version of vault.
+        type: string
+    steps:
+    - run:
+        command: |
+          if [[ "<<parameters.vault-version >>" == "latest"]]; then
+            VAULT_VERSION=$(curl -s https://releases.hashicorp.com/index.json \
+              | jq -r '[.[] | select(.name == "vault") | .versions[] \
+              | select(.version | contains("ent") | not) \
+              | select(.version | contains("beta") | not) \
+              | .version][-1]')
+          else
+            VAULT_VERSION=<<parameters.vault_version>>
+          fi
+
+          echo "Installing ${VAULT_VERSION} of vault"
+
+          curl -o vault.zip https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip
+          unzip vault.zip
+          mkdir ~/.vault/bin
+          mv vault ~/.vault/bin/
+
+          echo "export PATH=$PATH:~/bin/vault" >> $BASH_ENV
+        name: Install Vault binary
+  login:
+    description: Authenticates against Vault using AppRole token.
+    parameters:
+      vault-addr:
+        default: $VAULT_ADDR
+        description: Override VAULT_ADDR coming from context.
+        type: string
+      vault-role-id:
+        default: VAULT_ROLE_ID
+        description: Vault AppRole ID
+        type: env_var_name
+      vault-secret-id:
+        default: VAULT_SECRET_ID
+        description: Vault AppRole Secret ID
+        type: env_var_name
+    steps:
+    - run:
+        command: |
+          VAULT_ADDR=<<parameters.vault-addr>>
+          vault write auth/approle/login \
+            role_id=$<<parameters.vault-role-id>> \
+            secret_id=$<<parameters.vault-secret-id>> \
+            -token-only -format=json \
+            | jq -r .token > ~/.vault_token
+        name: Login to Vault
+description: |
+  Easily integrate Vault Credentials into your CircleCI projects.
+orbs:
+  aws-cli: circleci/aws-cli@0.1.16
+version: 2.1
+
