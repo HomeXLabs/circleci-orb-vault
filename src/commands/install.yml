@@ -28,7 +28,7 @@ steps:
 
         curl -s -o vault.zip https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip
         unzip vault.zip
-        mkdir -p ~/.vault/bin
-        mv vault ~/.vault/bin/
+        mkdir -p ~/.bin
+        mv vault ~/.bin/
 
-        echo "export PATH=$PATH:~/bin/vault" >> $BASH_ENV
+        echo "export PATH=$PATH:~/.bin/" >> $BASH_ENV

@@ -22,5 +22,5 @@ steps:
         vault write auth/approle/login \
           role_id=$<<parameters.vault-role-id>> \
           secret_id=$<<parameters.vault-secret-id>> \
-          -token-only -format=json \
+          -format=json \
           | jq -r .token > ~/.vault_token
