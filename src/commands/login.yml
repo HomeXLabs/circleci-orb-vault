@@ -23,4 +23,5 @@ steps:
           role_id=$<<parameters.vault-role-id>> \
           secret_id=$<<parameters.vault-secret-id>> \
           -format=json \
-          | jq -r .token > ~/.vault_token
+          | jq -r .auth.client_token > ~/.vault-token
+        echo "Login sucessful"
