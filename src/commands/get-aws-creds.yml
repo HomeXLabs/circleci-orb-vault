@@ -45,7 +45,7 @@ steps:
             name: Configure AWS default region
             command: |
               if [ -z "$<<parameters.aws-region>>" ]; then
-                $<<parameters.aws-region>>="us-east-1"
+                <<parameters.aws-region>>="us-east-1"
               fi
 
               aws configure set region $<<parameters.aws-region>> \
