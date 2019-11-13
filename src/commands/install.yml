@@ -12,21 +12,23 @@ steps:
   - run:
       name: Install Vault binary
       command: |
-        if [[ "<<parameters.vault-version >>" == "latest"]]; then
+        if which vault > /dev/null; then
+          echo "The Vault CLI is already installed. Skipping."
+          exit 0
+        fi
+
+        if [ "<<parameters.vault-version >>" == "latest" ]; then
           VAULT_VERSION=$(curl -s https://releases.hashicorp.com/index.json \
-            | jq -r '[.[] | select(.name == "vault") | .versions[] \
-            | select(.version | contains("ent") | not) \
-            | select(.version | contains("beta") | not) \
-            | .version][-1]')
+            | jq -r '[.[] | select(.name == "vault") | .versions[] | select(.version | contains("ent") | not) | select(.version | contains("beta") | not) | .version][-1]')
         else
           VAULT_VERSION=<<parameters.vault-version>>
         fi
 
         echo "Installing ${VAULT_VERSION} of vault"
 
-        curl -o vault.zip https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip
+        curl -s -o vault.zip https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip
         unzip vault.zip
-        mkdir ~/.vault/bin
+        mkdir -p ~/.vault/bin
         mv vault ~/.vault/bin/
 
         echo "export PATH=$PATH:~/bin/vault" >> $BASH_ENV
