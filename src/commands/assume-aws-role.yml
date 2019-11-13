@@ -1,0 +1,45 @@
+description: Creates an Assume Role profile for AWS
+
+parameters:
+  aws-role-arn:
+    description: Role ARN to be assumed
+    type: string
+  aws-role-session-name:
+    description: Role session name
+    type: string
+    default: CircleCI
+  aws-profile-name:
+    description: Profile name to be configured.
+    type: string
+    default: assume_role
+  aws-source-profile-name:
+    description: Profile name to be used as the source for the credentials.
+    type: string
+    default: default
+  set-default-profile:
+    description: >
+      Do you want to set this assume role profile as the default going forward.
+    type: boolean
+    default: true
+
+steps:
+  - run:
+      name: Create AWS Assume Role profile
+      command: |
+        aws configure set source \
+          <<parameters.aws-source-profile-name>> \
+          --profile <<parameters.aws-profile-name>>
+        aws configure set role_arn \
+          <<parameters.aws-role-arn>> \
+          --profile <<parameters.aws-profile-name>>
+        aws configure set role_session_name \
+          <<parameters.aws-role-session-name>> \
+          --profile <<parameters.aws-profile-name>>
+
+  - when:
+      condition: <<parameters.set-default-profile>>
+      steps:
+        - run:
+            name: Set AWS default profile
+            command: |
+              echo "AWS_PROFILE=<<parameters.aws-profile-name>>" >> $BASH_ENV

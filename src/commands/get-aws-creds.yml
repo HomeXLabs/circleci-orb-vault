@@ -18,7 +18,7 @@ parameters:
       (defaults to AWS_DEFAULT_REGION)
     type: env_var_name
     default: AWS_DEFAULT_REGION
-  aws-configure-default-region:
+  configure-default-region:
     description: >
       Some AWS actions don't require a region; set this to false if you do not
       want to store a default region in ~/.aws/config
@@ -39,7 +39,7 @@ steps:
           --profile <<parameters.aws-profile-name>>
         unset VAULT_AWS_CREDS
   - when:
-      condition: <<parameters.aws-configure-default-region>>
+      condition: <<parameters.configure-default-region>>
       steps:
         - run:
             name: Configure AWS default region
