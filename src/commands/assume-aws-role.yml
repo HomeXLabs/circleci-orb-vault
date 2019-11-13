@@ -27,7 +27,7 @@ steps:
   - run:
       name: Create AWS Assume Role profile
       command: |
-        aws configure set source \
+        aws configure set source_profile \
           <<parameters.aws-source-profile-name>> \
           --profile <<parameters.aws-profile-name>>
         aws configure set role_arn \

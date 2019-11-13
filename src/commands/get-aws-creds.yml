@@ -43,7 +43,7 @@ steps:
       command: |
         for i in 1 2 3 4 5; do
           aws iam get-user && break || sleep 3
-        don
+        done
   - when:
       condition: <<parameters.configure-default-region>>
       steps:
