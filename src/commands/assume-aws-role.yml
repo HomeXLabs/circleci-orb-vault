@@ -23,6 +23,7 @@ parameters:
     default: true
 
 steps:
+  - aws-cli/install
   - run:
       name: Create AWS Assume Role profile
       command: |
