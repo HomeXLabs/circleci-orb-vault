@@ -28,7 +28,7 @@ parameters:
 steps:
   - aws-cli/install
   - run:
-      name: Retrieve Credentials from Vault
+      name: Retrieve credentials from Vault
       command: |
         VAULT_AWS_CREDS=$(vault read << parameters.vault-path >> -format=json | jq .data)
         aws configure set aws_access_key_id \
@@ -38,6 +38,12 @@ steps:
           $(echo ${VAULT_AWS_CREDS} | jq -r .secret_key) \
           --profile <<parameters.aws-profile-name>>
         unset VAULT_AWS_CREDS
+  - run:
+      name: Wait until credentials are valid
+      command: |
+        for i in 1 2 3 4 5; do
+          aws iam get-user && break || sleep 3
+        don
   - when:
       condition: <<parameters.configure-default-region>>
       steps:
