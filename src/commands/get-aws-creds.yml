@@ -51,4 +51,4 @@ steps:
               aws configure set region $<<parameters.aws-region>> \
               --profile <<parameters.aws-profile-name>>
 
-              echo "export <<parameters.aws-region>>=$<<parameters.aws-region>>" >> $BASH_ENV  
+              echo "export <<parameters.aws-region>>=$<<parameters.aws-region>>" >> $BASH_ENV
