@@ -43,4 +43,4 @@ steps:
         - run:
             name: Set AWS default profile
             command: |
-              echo "AWS_PROFILE=<<parameters.aws-profile-name>>" >> $BASH_ENV
+              echo "export AWS_PROFILE=<<parameters.aws-profile-name>>" >> $BASH_ENV
