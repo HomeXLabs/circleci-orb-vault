@@ -43,7 +43,7 @@ steps:
       command: |
         echo "Checking if credentials are valid..."
         for i in 1 2 3 4 5; do
-          echo -n "Check 1:"
+          echo -n "Check 1: "
           aws iam get-user && break || sleep 3
         done
   - when:
