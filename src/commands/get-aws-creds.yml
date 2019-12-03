@@ -42,10 +42,21 @@ steps:
       name: Wait until credentials are valid
       command: |
         echo "Checking if credentials are valid..."
-        for i in 1 2 3 4 5; do
-          echo -n "Check 1: "
-          aws iam get-user && break || sleep 3
+        
+        retries=12
+        while ((retries > 0)); do
+          echo "${retries} left..."
+          aws iam get-user && break
+
+          echo "... let's wait 5 seconds and retry"
+          sleep 5
+          ((retries --))
         done
+
+        if ((retries == 0 )); then
+          echo "The credentials never started working even after 1 min, so exiting..."
+          exit 1
+        fi
   - when:
       condition: <<parameters.configure-default-region>>
       steps:
