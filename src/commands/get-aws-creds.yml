@@ -42,7 +42,7 @@ steps:
       name: Wait until credentials are valid
       command: |
         echo "Checking if credentials are valid..."
-        
+
         retries=12
         while ((retries > 0)); do
           echo "${retries} left..."
