@@ -4,4 +4,6 @@ description: >
   Easily integrate Vault Credentials into your CircleCI projects.
 
 orbs:
-  aws-cli: circleci/aws-cli@0.1.16
+  aws-cli: circleci/aws-cli@0.1.20
+  aws-ecr: circleci/aws-ecr@6.7.0
+  aws-s3: circleci/aws-s3@1.0.15

@@ -1,0 +1,98 @@
+description: >
+  This is a wrapper to simplify the building and pushing images to ECR. This only supports building and pushing a single image. If you are building multiple images it is better to use the `ecr-login` command and then build/push the images manually.
+
+parameters:
+  aws-profile-name:
+    description: Profile name to be configured.
+    type: string
+    default: default
+  aws-region:
+    description: |
+      Env var of AWS region to operate in
+      (defaults to AWS_DEFAULT_REGION)
+    type: env_var_name
+    default: AWS_DEFAULT_REGION
+  aws-role-arn:
+    description: Role ARN to be assumed
+    type: string
+  aws-role-session-name:
+    description: Role session name
+    type: string
+    default: CircleCI
+  configure-default-region:
+    description: >
+      Some AWS actions don't require a region; set this to false if you do not
+      want to store a default region in ~/.aws/config
+    type: boolean
+    default: true
+  dockerfile:
+    description: Name of dockerfile to use. Defaults to Dockerfile.
+    type: string
+    default: Dockerfile
+  extra-build-args:
+    description: |
+      Extra flags to pass to docker build. For examples, see https://docs.docker.com/engine/reference/commandline/build
+    type: string
+    default: ""
+  path:
+    description: Path to the directory containing your Dockerfile and build context.
+      Defaults to . (working directory).
+    type: string
+    default: .
+  repo:
+    description: Name of an Amazon ECR repository
+    type: string
+
+  set-default-profile:
+    description: >
+      Do you want to set this assume role profile as the default going forward.
+    type: boolean
+    default: true
+  tag:
+    description: A comma-separated string containing docker image tags (default
+      = latest)
+    type: string
+    default: latest
+  vault-addr:
+    type: string
+    description: Override VAULT_ADDR coming from context.
+    default: $VAULT_ADDR
+  vault-path:
+    type: string
+    description: The vault path to the AWS Role.
+  vault-role-id:
+    type: env_var_name
+    description: Vault AppRole ID
+    default: VAULT_ROLE_ID
+  vault-secret-id:
+    type: env_var_name
+    description: Vault AppRole Secret ID
+    default: VAULT_SECRET_ID
+  vault-version:
+    type: string
+    description: Install a specific version of vault.
+    default: latest
+
+steps:
+  - ecr-login:
+      aws-profile-name: << parameters.aws-profile-name >>
+      aws-region: << parameters.aws-region >>
+      aws-role-arn: << parameters.assume-aws-role >>
+      aws-role-session-name: << parameters.aws-role-session-name >>
+      configure-default-region: << parameters.configure-default-region
+      set-default-profile: << parameters.set-default-region >>
+      vault-addr: << parameters.vault-addr >>
+      vault-path: << parameters.vault-path >>
+      vault-role-id: << parameters.vault-role-id >>
+      vault-secret-id: << parameters.vault-secret-id >>
+      vault-version: << parameters.vault-version >>
+  - aws-ecr/build-image:
+      dockerfile: <<parameters.dockerfile>>
+      extra-build-args: <<parameters.extra-build-args>>
+      no-output-timeout: <<parameters.no-output-timeout>>
+      path: <<parameters.path>>
+      repo: <<parameters.repo>>
+      tag: <<parameters.tag>>
+  - aws-ecr/push-image:
+      repo: <<parameters.repo>>
+      tag: <<parameters.tag>>
