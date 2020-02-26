@@ -1,4 +1,4 @@
-description: Retrieves AWS credentials and sets them as an AWS profile
+description: Retrieves AWS credentials and sets them as an AWS profile.
 
 parameters:
   aws-profile-name:
@@ -24,7 +24,7 @@ parameters:
   vault-path:
     type: string
     description: The vault path to the AWS Role.
-    
+
 steps:
   - aws-cli/install
   - run:

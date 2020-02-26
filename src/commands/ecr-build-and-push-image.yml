@@ -1,5 +1,6 @@
 description: >
-  This is a wrapper to simplify the building and pushing images to ECR. This only supports building and pushing a single image. If you are building multiple images it is better to use the `ecr-login` command and then build/push the images manually.
+  This is a wrapper to simplify the building and pushing images to ECR. This only supports building and pushing a single image.
+  If you are building multiple images it is better to use the `ecr-login` command and then build/push the images manually.
 
 parameters:
   aws-profile-name:
