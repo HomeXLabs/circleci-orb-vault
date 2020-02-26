@@ -56,7 +56,7 @@ steps:
       aws-region: << parameters.aws-region >>
       aws-role-arn: << parameters.assume-aws-role >>
       aws-role-session-name: << parameters.aws-role-session-name >>
-      configure-default-region: << parameters.configure-default-region
+      configure-default-region: << parameters.configure-default-region >>
       set-default-profile: << parameters.set-default-region >>
       vault-addr: << parameters.vault-addr >>
       vault-path: << parameters.vault-path >>

@@ -64,7 +64,7 @@ steps:
       vault-path: << parameters.vault-path >>
       configure-default-region: << parameters.configure-default-region >>
   - assume-aws-role:
-      aws-role-arn: << parameters.assume-aws-role >>
+      aws-role-arn: << parameters.aws-role-arn >>
       aws-role-session-name: << parameters.aws-role-session-name >>
       aws-source-profile-name: << parameters.aws-profile-name >>
       aws-profile-name: "<< parameters.aws-profile-name>>-assume"
