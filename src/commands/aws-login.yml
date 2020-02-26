@@ -68,4 +68,4 @@ steps:
       aws-role-session-name: << parameters.aws-role-session-name >>
       aws-source-profile-name: << parameters.aws-profile-name >>
       aws-profile-name: "<< parameters.aws-profile-name>>-assume"
-      set-default-profile: << parameters.set-default-region >>
+      set-default-profile: << parameters.set-default-profile >>
