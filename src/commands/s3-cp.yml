@@ -1,0 +1,82 @@
+description: >
+  This is a wrapper to simplify the copying of files to S3. This only supports uploading a single item (You can use wildcards).
+  If you are uploading multiple files it is better to use the `aws-login` command and then copy the files manually.
+
+parameters:
+  arguments:
+    description: If you wish to pass any additional arguments to the aws copy
+      command (i.e. -sse)
+    type: string
+    default: ""
+  aws-profile-name:
+    description: Profile name to be configured.
+    type: string
+    default: default
+  aws-region:
+    description: |
+      Env var of AWS region to operate in
+      (defaults to AWS_DEFAULT_REGION)
+    type: env_var_name
+    default: AWS_DEFAULT_REGION
+  aws-role-arn:
+    description: Role ARN to be assumed
+    type: string
+  aws-role-session-name:
+    description: Role session name
+    type: string
+    default: CircleCI
+  configure-default-region:
+    description: >
+      Some AWS actions don't require a region; set this to false if you do not
+      want to store a default region in ~/.aws/config
+    type: boolean
+    default: true
+  from:
+    description: A local file or source s3 object
+    type: string
+  set-default-profile:
+    description: >
+      Do you want to set this assume role profile as the default going forward.
+    type: boolean
+    default: true
+  to:
+    description: A local target or s3 destination
+    type: string
+  vault-addr:
+    type: string
+    description: Override VAULT_ADDR coming from context.
+    default: $VAULT_ADDR
+  vault-path:
+    type: string
+    description: The vault path to the AWS Role.
+  vault-role-id:
+    type: env_var_name
+    description: Vault AppRole ID
+    default: VAULT_ROLE_ID
+  vault-secret-id:
+    type: env_var_name
+    description: Vault AppRole Secret ID
+    default: VAULT_SECRET_ID
+  vault-version:
+    type: string
+    description: Install a specific version of vault.
+    default: latest
+
+steps:
+  - aws-login:
+      aws-profile-name: << parameters.aws-profile-name >>
+      aws-region: << parameters.aws-region >>
+      aws-role-arn: << parameters.aws-role-arn >>
+      aws-role-session-name: << parameters.aws-role-session-name >>
+      configure-default-region: << parameters.configure-default-region >>
+      set-default-profile: << parameters.set-default-profile >>
+      vault-addr: << parameters.vault-addr >>
+      vault-path: << parameters.vault-path >>
+      vault-role-id: << parameters.vault-role-id >>
+      vault-secret-id: << parameters.vault-secret-id >>
+      vault-version: << parameters.vault-version >>
+  - run:
+      name: S3 Copy << parameters.from >> -> << parameters.to >>
+      command: |
+        aws s3 cp << parameters.from >> << parameters.to >><<# parameters.arguments >> \
+          << parameters.arguments >><</ parameters.arguments >>
