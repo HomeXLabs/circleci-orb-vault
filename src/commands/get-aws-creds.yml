@@ -1,13 +1,6 @@
-description: Retrieves AWS credentials and sets them as an AWS profile
+description: Retrieves AWS credentials and sets them as an AWS profile.
 
 parameters:
-  vault-addr:
-    type: string
-    description: Override VAULT_ADDR coming from context.
-    default: $VAULT_ADDR
-  vault-path:
-    type: string
-    description: The vault path to the AWS Role.
   aws-profile-name:
     description: Profile name to be configured.
     type: string
@@ -24,6 +17,13 @@ parameters:
       want to store a default region in ~/.aws/config
     type: boolean
     default: true
+  vault-addr:
+    type: string
+    description: Override VAULT_ADDR coming from context.
+    default: $VAULT_ADDR
+  vault-path:
+    type: string
+    description: The vault path to the AWS Role.
 
 steps:
   - aws-cli/install
