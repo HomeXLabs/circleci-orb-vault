@@ -67,7 +67,7 @@ parameters:
     default: latest
 
 steps:
-  - ecr-login:
+  - aws-login:
       aws-profile-name: << parameters.aws-profile-name >>
       aws-region: << parameters.aws-region >>
       aws-role-arn: << parameters.assume-aws-role >>
