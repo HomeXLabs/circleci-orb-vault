@@ -66,10 +66,10 @@ steps:
   - aws-login:
       aws-profile-name: << parameters.aws-profile-name >>
       aws-region: << parameters.aws-region >>
-      aws-role-arn: << parameters.assume-aws-role >>
+      aws-role-arn: << parameters.aws-role-arn >>
       aws-role-session-name: << parameters.aws-role-session-name >>
       configure-default-region: << parameters.configure-default-region >>
-      set-default-profile: << parameters.set-default-region >>
+      set-default-profile: << parameters.set-default-profile >>
       vault-addr: << parameters.vault-addr >>
       vault-path: << parameters.vault-path >>
       vault-role-id: << parameters.vault-role-id >>
