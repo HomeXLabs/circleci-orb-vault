@@ -12,3 +12,6 @@ workflows:
       - orb-tools/publish-dev:
           orb-name: homexlabs/vault
           requires: [orb-tools/pack]
+          filters:
+            branches:
+              only: master
