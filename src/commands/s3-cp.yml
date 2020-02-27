@@ -31,36 +31,14 @@ parameters:
       want to store a default region in ~/.aws/config
     type: boolean
     default: true
-  dockerfile:
-    description: Name of dockerfile to use. Defaults to Dockerfile.
-    type: string
-    default: Dockerfile
-  extra-build-args:
-    description: |
-      Extra flags to pass to docker build. For examples, see https://docs.docker.com/engine/reference/commandline/build
-    type: string
-    default: ""
   from:
     description: A local file or source s3 object
-    type: string
-  path:
-    description: Path to the directory containing your Dockerfile and build context.
-      Defaults to . (working directory).
-    type: string
-    default: .
-  repo:
-    description: Name of an Amazon ECR repository
     type: string
   set-default-profile:
     description: >
       Do you want to set this assume role profile as the default going forward.
     type: boolean
     default: true
-  tag:
-    description: A comma-separated string containing docker image tags (default
-      = latest)
-    type: string
-    default: latest
   to:
     description: A local target or s3 destination
     type: string
@@ -90,7 +68,7 @@ steps:
       aws-region: << parameters.aws-region >>
       aws-role-arn: << parameters.assume-aws-role >>
       aws-role-session-name: << parameters.aws-role-session-name >>
-      configure-default-region: << parameters.configure-default-region
+      configure-default-region: << parameters.configure-default-region >>
       set-default-profile: << parameters.set-default-region >>
       vault-addr: << parameters.vault-addr >>
       vault-path: << parameters.vault-path >>
