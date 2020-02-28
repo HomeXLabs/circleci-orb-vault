@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/HomeXLabs/circleci-orb-vault/compare/v1.0.1...v1.0.2) (2020-02-28)
+
+
+### Bug Fixes
+
+* cci release process ([#6](https://github.com/HomeXLabs/circleci-orb-vault/issues/6)) ([9b2ffe4](https://github.com/HomeXLabs/circleci-orb-vault/commit/9b2ffe41ea628beeace06e5795c5678b69e10649))
+
 ## [1.0.1](https://github.com/HomeXLabs/circleci-orb-vault/compare/v1.0.0...v1.0.1) (2020-02-28)
 
 
