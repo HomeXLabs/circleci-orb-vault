@@ -105,3 +105,8 @@ workflows:
           bot-user: devopsheroes
           requires:
           - orb-tools/pack
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
