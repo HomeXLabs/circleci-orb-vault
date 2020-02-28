@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/HomeXLabs/circleci-orb-vault/compare/v1.0.0...v1.0.1) (2020-02-28)
+
+
+### Bug Fixes
+
+* use cci image ([#5](https://github.com/HomeXLabs/circleci-orb-vault/issues/5)) ([2301f6c](https://github.com/HomeXLabs/circleci-orb-vault/commit/2301f6c09c4a8f6c84040cd3c06c499c79d80bdf))
+
 # 1.0.0 (2020-02-28)
 
 
