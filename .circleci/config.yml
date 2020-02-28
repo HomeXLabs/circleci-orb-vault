@@ -92,7 +92,7 @@ workflows:
               only: master
   orb-publishing-tag:
     jobs:
-      - orb-tools/pack
+      - orb-tools/pack:
         filters:
           branches:
             ignore: /.*/
