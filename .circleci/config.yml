@@ -41,10 +41,6 @@ jobs:
         description: |
           The GitHub user to post PR comment. Only applicable when add-pr-comment is set to true.
         type: string
-      orb-name:
-        description: |
-          Semver-less name of the orb to be promoted into production , e.g. circleci/orb-tools
-        type: string
       orb-ref:
         description: |
           Reference to publish to a production release
@@ -57,7 +53,6 @@ jobs:
     steps:
     - checkout
     - orb-tools/publish:
-        orb-path: << parameters.orb-path >>
         orb-ref: << parameters.orb-ref >>
         token-variable: << parameters.token-variable >>
     - when:
