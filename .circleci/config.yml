@@ -8,6 +8,8 @@ jobs:
   create-release:
     description: |
       Creates the release using Semantic Release
+    docker:
+      - image: circleci/node
     steps:
     - checkout
     - run:
@@ -22,6 +24,8 @@ jobs:
   publish-orb:
     description: |
       Uses the CLI to promote a dev version of an orb to the registry.
+    docker:
+      - image: circleci/node
     parameters:
       add-pr-comment:
         description: |
