@@ -25,7 +25,7 @@ jobs:
     description: |
       Uses the CLI to promote a dev version of an orb to the registry.
     docker:
-      - image: circleci/node
+      - image: circleci/circleci-cli
     parameters:
       add-pr-comment:
         description: |
