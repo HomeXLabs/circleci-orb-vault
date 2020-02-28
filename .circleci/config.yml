@@ -98,6 +98,7 @@ workflows:
             ignore: /.*/
           tags:
             only: /^v\d+\.\d+\.\d+$/
+
       - publish-orb:
           orb-ref: homexlabs/vault@$CIRCLE_TAG
           add-pr-comment: true
