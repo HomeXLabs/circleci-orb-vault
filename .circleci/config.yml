@@ -93,12 +93,11 @@ workflows:
   orb-publishing-tag:
     jobs:
       - orb-tools/pack:
-        filters:
-          branches:
-            ignore: /.*/
-          tags:
-            only: /^v\d+\.\d+\.\d+$/
-
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
       - publish-orb:
           orb-ref: homexlabs/vault@$CIRCLE_TAG
           add-pr-comment: true
