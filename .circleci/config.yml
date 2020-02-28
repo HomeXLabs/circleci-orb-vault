@@ -52,6 +52,8 @@ jobs:
         type: env_var_name
     steps:
     - checkout
+    - attach_workspace:
+        at: workspace
     - orb-tools/publish:
         orb-ref: << parameters.orb-ref >>
         token-variable: << parameters.token-variable >>
@@ -90,11 +92,14 @@ workflows:
               only: master
   orb-publishing-tag:
     jobs:
+      - orb-tools/pack
       - publish-orb:
           orb-ref: homexlabs/vault@$CIRCLE_TAG
           add-pr-comment: true
           bot-token-variable: CIRCLE_TOKEN
           bot-user: devopsheroes
+          requires:
+          - orb-tools/pack
           filters:
             branches:
               ignore: /.*/
