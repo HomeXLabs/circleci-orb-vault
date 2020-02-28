@@ -62,7 +62,6 @@ jobs:
             bot-token-variable: <<parameters.bot-token-variable>>
             bot-user: <<parameters.bot-user>>
             comment: $PR_MESSAGE
-            pr-number-sed-expression: <<parameters.pr-number-sed-expression>>
 
 workflows:
   orb-test-and-release:
