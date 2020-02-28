@@ -92,7 +92,12 @@ workflows:
               only: master
   orb-publishing-tag:
     jobs:
-      - orb-tools/pack
+      - orb-tools/pack:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
       - publish-orb:
           orb-ref: homexlabs/vault@$CIRCLE_TAG
           add-pr-comment: true
@@ -100,8 +105,3 @@ workflows:
           bot-user: devopsheroes
           requires:
           - orb-tools/pack
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d+\.\d+\.\d+$/
