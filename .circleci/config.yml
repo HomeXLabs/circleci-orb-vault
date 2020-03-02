@@ -25,43 +25,19 @@ jobs:
     description: |
       Uses the CLI to promote a dev version of an orb to the registry.
     docker:
-      - image: circleci/node
-    parameters:
-      add-pr-comment:
-        description: |
-          CircleCI can comment on the merged PR with the final production version. If you want contributors to see a message with the production version, please provide the username & token, and ensure the merge commit subject includes the PR number in default format. i.e. 'Merge pull request #XX from some-branch'
-        type: boolean
-      bot-token-variable:
-        default: PR_COMMENTER_GITHUB_TOKEN
-        description: |
-          Name of env var containing the GitHub token value of the GitHub user that to be used for posting the PR comment. Pass this as a raw string such as GITHUB_TOKEN. Do not paste the actual token into your configuration. Only applicable when add-pr-comment is set to true.
-        type: env_var_name
-      bot-user:
-        default: ""
-        description: |
-          The GitHub user to post PR comment. Only applicable when add-pr-comment is set to true.
-        type: string
-      orb-ref:
-        description: |
-          Reference to publish to a production release
-        type: string
-      token-variable:
-        default: CIRCLE_TOKEN
-        description: |
-          Name of env var containing your token. Pass this as a raw string such as ORB_PUBLISHING_TOKEN. Do not paste the actual token into your configuration. If omitted it's assumed the CLI has already been setup with a valid token.
-        type: env_var_name
+      - image: circleci/circleci-cli
     steps:
     - checkout
+    - attach_workspace:
+        at: workspace
     - orb-tools/publish:
-        orb-ref: << parameters.orb-ref >>
-        token-variable: << parameters.token-variable >>
-    - when:
-        condition: <<parameters.add-pr-comment>>
-        steps:
-        - orb-tools/post-pr-comment:
-            bot-token-variable: <<parameters.bot-token-variable>>
-            bot-user: <<parameters.bot-user>>
-            comment: $PR_MESSAGE
+        orb-ref: homexlabs/vault@${CIRCLE_TAG:1}
+        orb-path: workspace/orb.yml
+        token-variable: CIRCLE_RELEASE_TOKEN
+    - orb-tools/post-pr-comment:
+        bot-token-variable: GITHUB_TOKEN
+        bot-user: devopsheroes
+        comment: "New version of the orb published!"
 
 workflows:
   orb-test-and-release:
@@ -90,11 +66,15 @@ workflows:
               only: master
   orb-publishing-tag:
     jobs:
+      - orb-tools/pack:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
       - publish-orb:
-          orb-ref: homexlabs/vault@$CIRCLE_TAG
-          add-pr-comment: true
-          bot-token-variable: CIRCLE_TOKEN
-          bot-user: devopsheroes
+          requires:
+          - orb-tools/pack
           filters:
             branches:
               ignore: /.*/
