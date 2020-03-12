@@ -26,6 +26,23 @@ parameters:
     description: The vault path to the AWS Role.
 
 steps:
+  - run:
+      name: Checking for existing credentials in Environment
+      command: |
+        echo "Checking for existing AWS credentials set as Environment Variables"
+        [ -n "$AWS_ACCESS_KEY_ID" ] && FOUND=true && \
+          echo "WARNING: AWS_ACCESS_KEY_ID env is set, trying to unset in the job" && \
+          unset AWS_ACCESS_KEY_ID >> ${BASH_ENV}
+        [ -n "$AWS_SECRET_ACCESS_KEY" ] && FOUND=true && \
+          echo "WARNING: AWS_SECRET_ACCESS_KEY env is set, trying to unset in the job" && \
+          unset AWS_SECRET_ACCESS_KEY >> ${BASH_ENV}
+        [ -n "$AWS_SESSION_TOKEN" ] && FOUND=true && \
+          echo "WARNING: AWS_SESSION_TOKEN env is set, trying to unset in the job" && \
+          unset AWS_SESSION_TOKEN >> ${BASH_ENV}
+
+        [ -n "$FOUND" ] && \
+          echo "You should check your projects Environment Variables page to see if explicit AWS credentials are found, if they are they should be removed." && \
+          echo "Make sure you also check the Context Environment Variables"
   - aws-cli/install
   - run:
       name: Retrieve credentials from Vault
