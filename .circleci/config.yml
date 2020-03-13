@@ -83,6 +83,7 @@ jobs:
 
 workflows:
   orb-test-and-release:
+    when: << pipeline.parameters.run-integration-tests >>
     jobs:
       - test-seperate:
           context: hx-terraform-modules
