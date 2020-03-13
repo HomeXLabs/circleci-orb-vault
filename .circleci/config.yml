@@ -56,7 +56,8 @@ workflows:
             - run:
                 name: Inject bash variables
                 command: |
-                  cat ${BASH_ENV} >> tests/bash.env
+                  export VAULT_ROLE_ID=${VAULT_ROLE_ID} >> tests/bash.env
+                  export VAULT_SECRET_ID=${VAULT_SECRET_ID} >> tests/bash.env
             - orb-tools/local-test-build:
                 test-config-location: tests/seperate.yml
           context: hx-terraform-modules
