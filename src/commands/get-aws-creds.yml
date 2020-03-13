@@ -8,9 +8,9 @@ parameters:
   aws-region:
     description: |
       Env var of AWS region to operate in
-      (defaults to AWS_DEFAULT_REGION)
+      (defaults to AWS_REGION)
     type: env_var_name
-    default: AWS_DEFAULT_REGION
+    default: AWS_REGION
   configure-default-region:
     description: >
       Some AWS actions don't require a region; set this to false if you do not
@@ -92,3 +92,4 @@ steps:
               --profile <<parameters.aws-profile-name>>
 
               echo "export <<parameters.aws-region>>=$<<parameters.aws-region>>" >> $BASH_ENV
+              echo "export AWS_DEFAULT_REGION=$<<parameters.aws-region>>" >> $BASH_ENV

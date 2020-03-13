@@ -9,9 +9,9 @@ parameters:
   aws-region:
     description: |
       Env var of AWS region to operate in
-      (defaults to AWS_DEFAULT_REGION)
+      (defaults to AWS_REGION)
     type: env_var_name
-    default: AWS_DEFAULT_REGION
+    default: AWS_REGION
   aws-role-arn:
     description: Role ARN to be assumed
     type: string
@@ -63,4 +63,5 @@ steps:
       vault-role-id: << parameters.vault-role-id >>
       vault-secret-id: << parameters.vault-secret-id >>
       vault-version: << parameters.vault-version >>
-  - aws-ecr/ecr-login
+  - aws-ecr/ecr-login:
+      region: << parameters.aws-region >>
