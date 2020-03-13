@@ -35,7 +35,7 @@ jobs:
     steps:
       - vault/aws-login:
           vault-path: "aws/creds/terraform-aws"
-          aws-role-arn: "arn:aws:iam::429726442097:role/terraform"
+          aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
 
   test-ecr-login:
     description: |
@@ -45,7 +45,41 @@ jobs:
     steps:
       - vault/ecr-login:
           vault-path: "aws/creds/terraform-aws"
-          aws-role-arn: "arn:aws:iam::429726442097:role/terraform"
+          aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
+
+  test-s3-cp:
+    description: |
+      Tests the vault orb using the s3-cp command
+    docker:
+      - image: circleci/node
+    steps:
+      - run:
+          name: Create file
+          command: |
+            echo "Test" >> test.file
+      - vault/s3-cp:
+          vault-path: "aws/creds/terraform-aws"
+          aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
+          from: test.file
+          to: s3://hx-artifacts-sbx-ci/orbs/vault/test.file
+
+  test-s3-sync:
+    description: |
+      Tests the vault orb using the s3-sync command
+    docker:
+      - image: circleci/node
+    steps:
+      - run:
+          name: Create file
+          command: |
+            mkdir tests
+            echo "Test" >> tests/test.file
+      - vault/s3-sync:
+          vault-path: "aws/creds/terraform-aws"
+          aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
+          from: tests
+          to: s3://hx-artifacts-sbx-ci/orbs/vault/tests
+
 
   create-release:
     description: |
@@ -91,11 +125,17 @@ workflows:
           context: hx-terraform-modules
       - test-ecr-login:
           context: hx-terraform-modules
+      - test-s3-cp:
+          context: hx-terraform-modules
+      - test-s3-sync:
+          context: hx-terraform-modules
       - orb-tools/pack:
           requires:
           - test-seperate
           - test-aws-login
           - test-ecr-login
+          - test-s3-cp
+          - test-s3-sync
       - orb-tools/publish-dev:
           name: publish-dev-orb
           orb-name: homexlabs/vault
