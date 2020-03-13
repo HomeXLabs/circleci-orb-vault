@@ -16,6 +16,24 @@ parameters:
 
 steps:
   - run:
+      name: Check environment variables
+      command: |
+        echo "Checking for the existence of Vault Environment Variables"
+        [ -z "$<<parameters.vault-addr>>" ] && ERROR=true && \
+          echo "ERROR: <<parameters.vault-addr>> env is not set." || \
+          echo "Found <<parameters.vault-addr>>: $<<parameters.vault-addr>>"
+        [ -z "$<<parameters.vault-role-id>>" ] && ERROR=true && \
+          echo "ERROR: <<parameters.vault-role-id>> env is not set." || \
+          echo "Found <<parameters.vault-role-id>>: $<<parameters.vault-role-id>>"
+        [ -z "$<<parameters.vault-secret-id>>" ] && ERROR=true && \
+          echo "ERROR: <<parameters.vault-secret-id>> env is not set." || \
+          echo "Found <<parameters.vault-secret-id>>: **HIDDEN**"
+
+        [ -n "$ERROR" ] && \
+          echo "You should check your projects Environment Variables page to see if you set <<parameters.vault-addr>>, <<parameters.vault-role-id>> and  <<parameters.vault-secret-id>>." &&
+          exit 1 || \
+          echo "Environment variables look all good."
+  - run:
       name: Login to Vault
       command: |
         VAULT_ADDR=<<parameters.vault-addr>>

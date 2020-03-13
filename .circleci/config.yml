@@ -3,8 +3,50 @@ version: 2.1
 orbs:
   orb-tools: circleci/orb-tools@9.0.0
   slack: circleci/slack@3.3.0
+  vault: homexlabs/vault@<< pipeline.parameters.dev-orb-version >>
+
+parameters:
+  dev-orb-version:
+    type: string
+    description: "The orb version to grab"
+    default: "dev:alpha"
+  run-integration-tests:
+    type: boolean
+    description: "Run the Orb integration tests"
+    default: false
 
 jobs:
+  test-seperate:
+    description: |
+      Tests the vault orb using the seperate commands
+    docker:
+      - image: circleci/node
+    steps:
+      - vault/install
+      - vault/login
+      - vault/get-aws-creds:
+          vault-path: "aws/creds/terraform-aws"
+
+  test-aws-login:
+    description: |
+      Tests the vault orb using the aws-login command
+    docker:
+      - image: circleci/node
+    steps:
+      - vault/aws-login:
+          vault-path: "aws/creds/terraform-aws"
+          aws-role-arn: "arn:aws:iam::429726442097:role/terraform"
+
+  test-ecr-login:
+    description: |
+      Tests the vault orb using the ecr-login command
+    docker:
+      - image: circleci/node
+    steps:
+      - vault/ecr-login:
+          vault-path: "aws/creds/terraform-aws"
+          aws-role-arn: "arn:aws:iam::429726442097:role/terraform"
+
   create-release:
     description: |
       Creates the release using Semantic Release
@@ -42,6 +84,29 @@ jobs:
 workflows:
   orb-test-and-release:
     jobs:
+      - test-seperate:
+          context: hx-terraform-modules
+      - test-aws-login:
+          context: hx-terraform-modules
+      - test-ecr-login:
+          context: hx-terraform-modules
+      - orb-tools/pack
+          requires:
+          - test-seperate
+          - test-aws-login
+          - test-ecr-login
+      - orb-tools/publish-dev:
+          name: publish-dev-orb
+          orb-name: homexlabs/vault
+          branch-sha-version-ref: 'dev:$CIRCLE_BRANCH'
+          publish-branch-sha-version: true
+          requires:
+          - orb-tools/pack
+
+
+  orb-validate-and-test:
+    unless: << pipeline.parameters.run-integration-tests >>
+    jobs:
       - orb-tools/lint:
           filters:
             tags:
@@ -49,30 +114,18 @@ workflows:
       - orb-tools/pack:
           requires:
           - orb-tools/lint
-      - orb-tools/test-in-builds:
-          orb-name: vault
-          attach-workspace: true
-          test-steps:
-            - run:
-                name: Inject bash variables
-                command: |
-                  export VAULT_ROLE_ID=${VAULT_ROLE_ID} >> tests/bash.env
-                  export VAULT_SECRET_ID=${VAULT_SECRET_ID} >> tests/bash.env
-            - orb-tools/local-test-build:
-                test-config-location: tests/seperate.yml
-          context: hx-terraform-modules
-          requires:
-          - orb-tools/pack
-          filters:
-            branches:
-              ignore: master
       - orb-tools/publish-dev:
-          name: publish-dev-orb
           orb-name: homexlabs/vault
-          branch-sha-version-ref: 'dev:$CIRCLE_BRANCH'
+          publish-alpha-version: false
           publish-branch-sha-version: true
           requires:
           - orb-tools/test-in-builds
+          filters:
+            branches:
+              ignore: master
+      - orb-tools/trigger-integration-tests-workflow:
+          requires:
+          - orb-tools/publish-dev
           filters:
             branches:
               ignore: master
@@ -83,6 +136,7 @@ workflows:
             branches:
               only: master
   orb-publishing-tag:
+    unless: << pipeline.parameters.run-integration-tests >>
     jobs:
       - orb-tools/pack:
           filters:
