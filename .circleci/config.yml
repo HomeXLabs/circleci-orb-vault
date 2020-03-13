@@ -90,7 +90,7 @@ workflows:
           context: hx-terraform-modules
       - test-ecr-login:
           context: hx-terraform-modules
-      - orb-tools/pack
+      - orb-tools/pack:
           requires:
           - test-seperate
           - test-aws-login
