@@ -49,12 +49,24 @@ workflows:
       - orb-tools/pack:
           requires:
           - orb-tools/lint
+      - orb-tools/test-in-builds:
+          orb-name: vault
+          attach-workspace: true
+          test-steps:
+            - orb-tools/local-test-build:
+                test-config-location: tests/seperate.yml
+          requires:
+          - orb-tools/pack
+          filters:
+            branches:
+              ignore: master
       - orb-tools/publish-dev:
+          name: publish-dev-orb
           orb-name: homexlabs/vault
           branch-sha-version-ref: 'dev:$CIRCLE_BRANCH'
           publish-branch-sha-version: true
           requires:
-          - orb-tools/pack
+          - orb-tools/test-in-builds
           filters:
             branches:
               ignore: master
