@@ -53,8 +53,13 @@ workflows:
           orb-name: vault
           attach-workspace: true
           test-steps:
+            - run:
+                name: Inject bash variables
+                command: |
+                  cat ${BASH_ENV} >> tests/bash.env
             - orb-tools/local-test-build:
                 test-config-location: tests/seperate.yml
+          context: hx-terraform-modules
           requires:
           - orb-tools/pack
           filters:

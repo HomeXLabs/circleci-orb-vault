@@ -10,8 +10,7 @@ jobs:
           name: Get Env
           command: |
             source test/bash.env
-      - vault/install
-      - vault/login
+      - vault/aws-login
 
 workflow:
   build:
