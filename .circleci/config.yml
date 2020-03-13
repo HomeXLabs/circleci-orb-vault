@@ -21,6 +21,9 @@ jobs:
       Tests the vault orb using the seperate commands
     docker:
       - image: circleci/node
+    environment:
+      AWS_ACCESS_KEY_ID: FAKEKEYFORTEST
+      AWS_SECRET_KEY_ID: FAKEKEYFORTEST
     steps:
       - vault/install
       - vault/login
