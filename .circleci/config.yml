@@ -119,7 +119,7 @@ workflows:
           publish-alpha-version: false
           publish-branch-sha-version: true
           requires:
-          - orb-tools/test-in-builds
+          - orb-tools/pack
           filters:
             branches:
               ignore: master
