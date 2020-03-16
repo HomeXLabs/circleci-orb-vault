@@ -9,9 +9,9 @@ parameters:
   aws-region:
     description: |
       Env var of AWS region to operate in
-      (defaults to AWS_DEFAULT_REGION)
+      (defaults to AWS_REGION)
     type: env_var_name
-    default: AWS_DEFAULT_REGION
+    default: AWS_REGION
   aws-role-arn:
     description: Role ARN to be assumed
     type: string
@@ -33,7 +33,7 @@ parameters:
   vault-addr:
     type: string
     description: Override VAULT_ADDR coming from context.
-    default: $VAULT_ADDR
+    default: VAULT_ADDR
   vault-path:
     type: string
     description: The vault path to the AWS Role.

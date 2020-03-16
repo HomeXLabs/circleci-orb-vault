@@ -8,9 +8,9 @@ parameters:
   aws-region:
     description: |
       Env var of AWS region to operate in
-      (defaults to AWS_DEFAULT_REGION)
+      (defaults to AWS_REGION)
     type: env_var_name
-    default: AWS_DEFAULT_REGION
+    default: AWS_REGION
   configure-default-region:
     description: >
       Some AWS actions don't require a region; set this to false if you do not
@@ -26,9 +26,37 @@ parameters:
     description: The vault path to the AWS Role.
 
 steps:
+  - run:
+      name: Checking for existing AWS credentials
+      command: |
+        echo "Checking for existing AWS credentials set as Environment Variables"
+        [ -n "$AWS_ACCESS_KEY_ID" ] && FOUND=true && \
+          echo "WARNING: AWS_ACCESS_KEY_ID env is set, trying to unset in the job" && \
+          echo "unset AWS_ACCESS_KEY_ID" >> ${BASH_ENV} || \
+          echo "Didn't find AWS_ACCESS_KEY_ID"
+        [ -n "$AWS_SECRET_ACCESS_KEY" ] && FOUND=true && \
+          echo "WARNING: AWS_SECRET_ACCESS_KEY env is set, trying to unset in the job" && \
+          echo "unset AWS_SECRET_ACCESS_KEY" >> ${BASH_ENV} || \
+          echo "Didn't find AWS_SECRET_ACCESS_KEY"
+        [ -n "$AWS_SESSION_TOKEN" ] && FOUND=true && \
+          echo "WARNING: AWS_SESSION_TOKEN env is set, trying to unset in the job" && \
+          echo "unset AWS_SESSION_TOKEN" >> ${BASH_ENV} || \
+          echo "Didn't find AWS_SESSION_TOKEN"
+
+        echo
+        if [[ -n "$FOUND" ]]; then
+          echo "NOTICE:"
+          echo
+          echo "You should check your projects Environment Variables page to see if explicit AWS credentials are found,"
+          echo "if you have AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY set they should be removed."
+          echo "Make sure you also check the Context Environment Variables"
+        else
+          echo "Environment variables passed initial check, they are are all unset."
+        fi
+        echo
   - aws-cli/install
   - run:
-      name: Retrieve credentials from Vault
+      name: Retrieve AWS Credentials from Vault
       command: |
         VAULT_AWS_CREDS=$(vault read << parameters.vault-path >> -format=json | jq .data)
         aws configure set aws_access_key_id \
@@ -39,7 +67,7 @@ steps:
           --profile <<parameters.aws-profile-name>>
         unset VAULT_AWS_CREDS
   - run:
-      name: Wait until credentials are valid
+      name: Wait until AWS Credentials are valid
       command: |
         echo "Checking if credentials are valid..."
 
@@ -54,7 +82,8 @@ steps:
         done
 
         if ((retries == 0 )); then
-          echo "The credentials never started working even after 1 min, so exiting..."
+          echo "The AWS Credentials never started working even after 1 min, so exiting..."
+          echo "Make sure you have added the permission 'iam:getUser' to the policy."
           exit 1
         fi
   - when:
@@ -71,3 +100,4 @@ steps:
               --profile <<parameters.aws-profile-name>>
 
               echo "export <<parameters.aws-region>>=$<<parameters.aws-region>>" >> $BASH_ENV
+              echo "export AWS_DEFAULT_REGION=$<<parameters.aws-region>>" >> $BASH_ENV

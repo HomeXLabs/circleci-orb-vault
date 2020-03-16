@@ -3,8 +3,87 @@ version: 2.1
 orbs:
   orb-tools: circleci/orb-tools@9.0.0
   slack: circleci/slack@3.3.0
+  vault: homexlabs/vault@<< pipeline.parameters.dev-orb-version >>
+
+parameters:
+  dev-orb-version:
+    type: string
+    description: "The orb version to grab"
+    default: "dev:alpha"
+  run-integration-tests:
+    type: boolean
+    description: "Run the Orb integration tests"
+    default: false
 
 jobs:
+  test-seperate:
+    description: |
+      Tests the vault orb using the seperate commands
+    docker:
+      - image: circleci/node
+    environment:
+      AWS_ACCESS_KEY_ID: FAKEKEYFORTEST
+      AWS_SECRET_ACCESS_KEY: FAKEKEYFORTEST
+    steps:
+      - vault/install
+      - vault/login
+      - vault/get-aws-creds:
+          vault-path: "aws/creds/terraform-aws"
+
+  test-aws-login:
+    description: |
+      Tests the vault orb using the aws-login command
+    docker:
+      - image: circleci/node
+    steps:
+      - vault/aws-login:
+          vault-path: "aws/creds/terraform-aws"
+          aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
+
+  test-ecr-login:
+    description: |
+      Tests the vault orb using the ecr-login command
+    docker:
+      - image: circleci/node
+    steps:
+      - vault/ecr-login:
+          vault-path: "aws/creds/terraform-aws"
+          aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
+
+  test-s3-cp:
+    description: |
+      Tests the vault orb using the s3-cp command
+    docker:
+      - image: circleci/node
+    steps:
+      - run:
+          name: Create file
+          command: |
+            echo "Test" >> test.file
+      - vault/s3-cp:
+          vault-path: "aws/creds/terraform-aws"
+          aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
+          from: test.file
+          to: s3://hx-artifacts-sbx-ci/orbs/vault/test.file
+
+  test-s3-sync:
+    description: |
+      Tests the vault orb using the s3-sync command
+    docker:
+      - image: circleci/node
+    steps:
+      - run:
+          name: Create file
+          command: |
+            mkdir tests
+            echo "Test" >> tests/test.file
+      - vault/s3-sync:
+          vault-path: "aws/creds/terraform-aws"
+          aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
+          from: tests
+          to: s3://hx-artifacts-sbx-ci/orbs/vault/tests
+
+
   create-release:
     description: |
       Creates the release using Semantic Release
@@ -41,6 +120,36 @@ jobs:
 
 workflows:
   orb-test-and-release:
+    when: << pipeline.parameters.run-integration-tests >>
+    jobs:
+      - test-seperate:
+          context: hx-terraform-modules
+      - test-aws-login:
+          context: hx-terraform-modules
+      - test-ecr-login:
+          context: hx-terraform-modules
+      - test-s3-cp:
+          context: hx-terraform-modules
+      - test-s3-sync:
+          context: hx-terraform-modules
+      - orb-tools/pack:
+          requires:
+          - test-seperate
+          - test-aws-login
+          - test-ecr-login
+          - test-s3-cp
+          - test-s3-sync
+      - orb-tools/publish-dev:
+          name: publish-dev-orb
+          orb-name: homexlabs/vault
+          branch-sha-version-ref: 'dev:$CIRCLE_BRANCH'
+          publish-branch-sha-version: true
+          requires:
+          - orb-tools/pack
+
+
+  orb-validate-and-test:
+    unless: << pipeline.parameters.run-integration-tests >>
     jobs:
       - orb-tools/lint:
           filters:
@@ -51,10 +160,16 @@ workflows:
           - orb-tools/lint
       - orb-tools/publish-dev:
           orb-name: homexlabs/vault
-          branch-sha-version-ref: 'dev:$CIRCLE_BRANCH'
+          publish-alpha-version: false
           publish-branch-sha-version: true
           requires:
           - orb-tools/pack
+          filters:
+            branches:
+              ignore: master
+      - orb-tools/trigger-integration-tests-workflow:
+          requires:
+          - orb-tools/publish-dev
           filters:
             branches:
               ignore: master
@@ -65,6 +180,7 @@ workflows:
             branches:
               only: master
   orb-publishing-tag:
+    unless: << pipeline.parameters.run-integration-tests >>
     jobs:
       - orb-tools/pack:
           filters:

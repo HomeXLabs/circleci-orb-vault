@@ -4,7 +4,7 @@ parameters:
   vault-addr:
     type: string
     description: Override VAULT_ADDR coming from context.
-    default: $VAULT_ADDR
+    default: VAULT_ADDR
   vault-role-id:
     type: env_var_name
     description: Vault AppRole ID
@@ -16,9 +16,38 @@ parameters:
 
 steps:
   - run:
+      name: Checking for Vault environment variables
+      command: |
+        echo "Checking for the existence of Vault Environment Variables"
+        [ -z "$<<parameters.vault-addr>>" ] && ERROR=true && \
+          echo "ERROR: <<parameters.vault-addr>> env is not set." || \
+          echo "Found <<parameters.vault-addr>>: $<<parameters.vault-addr>>"
+        [ -z "$<<parameters.vault-role-id>>" ] && ERROR=true && \
+          echo "ERROR: <<parameters.vault-role-id>> env is not set." || \
+          echo "Found <<parameters.vault-role-id>>: $<<parameters.vault-role-id>>"
+        [ -z "$<<parameters.vault-secret-id>>" ] && ERROR=true && \
+          echo "ERROR: <<parameters.vault-secret-id>> env is not set." || \
+          echo "Found <<parameters.vault-secret-id>>: **HIDDEN**"
+
+        echo
+        if [[ -n "$ERROR" ]]; then
+          echo "ERROR:"
+          echo
+          echo "You should check your projects or context Environment Variables page to see if you set <<parameters.vault-addr>>,"
+          echo "<<parameters.vault-role-id>> and <<parameters.vault-secret-id>>"
+          echo
+          exit 1
+        else
+          echo "Environment variables passed initial check, they are are all set."
+          echo
+        fi
+  - run:
       name: Login to Vault
       command: |
-        VAULT_ADDR=<<parameters.vault-addr>>
+        if [[ -z "$VAULT_ADDR" ]]; then
+          VAULT_ADDR=$<<parameters.vault-addr>>
+          echo "export VAULT_ADDR=$<<parameters.vault-addr>>" >> ${BASH_ENV}
+        fi
         vault write auth/approle/login \
           role_id=$<<parameters.vault-role-id>> \
           secret_id=$<<parameters.vault-secret-id>> \
