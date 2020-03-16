@@ -83,7 +83,7 @@ steps:
 
         if ((retries == 0 )); then
           echo "The AWS Credentials never started working even after 1 min, so exiting..."
-          echo "Make sure you have"
+          echo "Make sure you have added the permission 'iam:getUser' to the policy."
           exit 1
         fi
   - when:
