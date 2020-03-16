@@ -29,10 +29,15 @@ steps:
           echo "ERROR: <<parameters.vault-secret-id>> env is not set." || \
           echo "Found <<parameters.vault-secret-id>>: **HIDDEN**"
 
+        echo
         [ -n "$ERROR" ] && \
-          echo "You should check your projects Environment Variables page to see if you set <<parameters.vault-addr>>, <<parameters.vault-role-id>> and  <<parameters.vault-secret-id>>." &&
+          echo "ERROR:" && \
+          echo && \
+          echo "You should check your projects Environment Variables page to see if you set <<parameters.vault-addr>>, <<parameters.vault-role-id>> and  <<parameters.vault-secret-id>>." && \
+          echo && \
           exit 1 || \
           echo "Environment variables look all good."
+        echo
   - run:
       name: Login to Vault
       command: |
