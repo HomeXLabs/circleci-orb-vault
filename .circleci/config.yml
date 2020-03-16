@@ -23,7 +23,7 @@ jobs:
       - image: circleci/node
     environment:
       AWS_ACCESS_KEY_ID: FAKEKEYFORTEST
-      AWS_SECRET_KEY_ID: FAKEKEYFORTEST
+      AWS_SECRET_ACCESS_KEY: FAKEKEYFORTEST
     steps:
       - vault/install
       - vault/login
