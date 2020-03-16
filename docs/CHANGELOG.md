@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/HomeXLabs/circleci-orb-vault/compare/v1.0.0...v1.1.0) (2020-03-16)
+
+
+### Features
+
+* check for aws credentials in the enviornment variables ([#10](https://github.com/HomeXLabs/circleci-orb-vault/issues/10)) ([4bdf7fa](https://github.com/HomeXLabs/circleci-orb-vault/commit/4bdf7fa0859c9203ddc76b7bb2478fcc300354f2))
+
 # 1.0.0 (2020-03-02)
 
 
