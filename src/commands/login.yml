@@ -38,7 +38,7 @@ steps:
           echo
           exit 1
         else
-          echo "Environment variables look all good."
+          echo "Environment variables passed initial check, they are are all set."
           echo
         fi
   - run:

@@ -51,7 +51,7 @@ steps:
           echo "if you have AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY set they should be removed."
           echo "Make sure you also check the Context Environment Variables"
         else
-          echo "Environment variables look all clean."
+          echo "Environment variables passed initial check, they are are all unset."
         fi
         echo
   - aws-cli/install
