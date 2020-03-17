@@ -17,10 +17,6 @@ parameters:
       want to store a default region in ~/.aws/config
     type: boolean
     default: true
-  vault-addr:
-    type: string
-    description: Override VAULT_ADDR coming from context.
-    default: $VAULT_ADDR
   vault-path:
     type: string
     description: The vault path to the AWS Role.

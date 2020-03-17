@@ -47,7 +47,7 @@ parameters:
     description: A local target or s3 destination
     type: string
   vault-addr:
-    type: string
+    type: env_var_name
     description: Override VAULT_ADDR coming from context.
     default: VAULT_ADDR
   vault-path:
