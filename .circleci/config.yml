@@ -83,7 +83,6 @@ jobs:
           from: tests
           to: s3://hx-artifacts-sbx-ci/orbs/vault/tests
 
-
   create-release:
     description: |
       Creates the release using Semantic Release
@@ -100,6 +99,7 @@ jobs:
         fail_only: true
         failure_message: ":rotating_light: Circle Vault Orb release has failed! $FAILURE_MESSAGE"
         webhook: $SLACK_WEBHOOK
+
   publish-orb:
     description: |
       Uses the CLI to promote a dev version of an orb to the registry.
@@ -147,7 +147,6 @@ workflows:
           requires:
           - orb-tools/pack
 
-
   orb-validate-and-test:
     unless: << pipeline.parameters.run-integration-tests >>
     jobs:
@@ -179,6 +178,7 @@ workflows:
           filters:
             branches:
               only: master
+              
   orb-publishing-tag:
     unless: << pipeline.parameters.run-integration-tests >>
     jobs:

@@ -58,7 +58,7 @@ parameters:
     type: string
     default: latest
   vault-addr:
-    type: string
+    type: env_var_name
     description: Override VAULT_ADDR coming from context.
     default: VAULT_ADDR
   vault-path:
