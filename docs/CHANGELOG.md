@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/HomeXLabs/circleci-orb-vault/compare/v1.1.0...v1.1.1) (2020-03-17)
+
+
+### Bug Fixes
+
+* cleanup some variables ([#11](https://github.com/HomeXLabs/circleci-orb-vault/issues/11)) ([2b098c9](https://github.com/HomeXLabs/circleci-orb-vault/commit/2b098c9651be91c142cc17d84f9b29580c47a72a))
+
 # [1.1.0](https://github.com/HomeXLabs/circleci-orb-vault/compare/v1.0.0...v1.1.0) (2020-03-16)
 
 
