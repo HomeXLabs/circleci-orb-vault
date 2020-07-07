@@ -122,16 +122,11 @@ workflows:
   orb-test-and-release:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
-      - test-seperate:
-          context: hx-terraform-modules
-      - test-aws-login:
-          context: hx-terraform-modules
-      - test-ecr-login:
-          context: hx-terraform-modules
-      - test-s3-cp:
-          context: hx-terraform-modules
-      - test-s3-sync:
-          context: hx-terraform-modules
+      - test-seperate
+      - test-aws-login
+      - test-ecr-login
+      - test-s3-cp
+      - test-s3-sync
       - orb-tools/pack:
           requires:
             - test-seperate
