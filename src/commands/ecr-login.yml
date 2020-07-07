@@ -66,7 +66,7 @@ steps:
   - run:
       name: Set AWS ECR URL
       command: |
-        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --profile=${AWS_PROFILE:-default} | jq '.Account')
+        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --profile=${AWS_PROFILE:-default} | jq -r '.Account')
 
         echo "AWS Region: ${<< parameters.aws-region >>}"
         echo "AWS Account ID: ${AWS_ACCOUNT_ID}"
