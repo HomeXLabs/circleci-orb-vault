@@ -9,7 +9,7 @@ parameters:
   dev-orb-version:
     type: string
     description: "The orb version to grab"
-    default: "dev:alpha"
+    default: "1.0.0"
   run-integration-tests:
     type: boolean
     description: "Run the Orb integration tests"
