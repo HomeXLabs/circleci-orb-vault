@@ -1,6 +1,15 @@
 description: Retrieves AWS credentials and sets them as an AWS profile.
 
 parameters:
+  aws-cli-version:
+    default: '2'
+    description: >-
+      Which version of the CLI to install. Version "1" and "2" are currently
+      available. Will default to "2"
+    enum:
+      - '1'
+      - '2'
+    type: enum
   aws-profile-name:
     description: Profile name to be configured.
     type: string
@@ -50,7 +59,8 @@ steps:
           echo "Environment variables passed initial check, they are are all unset."
         fi
         echo
-  - aws-cli/install
+  - aws-cli/install:
+      version: <<parameters.aws-cli-version>>
   - run:
       name: Retrieve AWS Credentials from Vault
       command: |

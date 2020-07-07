@@ -1,6 +1,15 @@
 description: Creates an Assume Role profile for AWS
 
 parameters:
+  aws-cli-version:
+    default: '2'
+    description: >-
+      Which version of the CLI to install. Version "1" and "2" are currently
+      available. Will default to "2"
+    enum:
+      - '1'
+      - '2'
+    type: enum
   aws-role-arn:
     description: Role ARN to be assumed
     type: string
@@ -23,7 +32,8 @@ parameters:
     default: true
 
 steps:
-  - aws-cli/install
+  - aws-cli/install:
+      version: <<parameters.aws-cli-version>>
   - run:
       name: Create AWS Assume Role profile
       command: |

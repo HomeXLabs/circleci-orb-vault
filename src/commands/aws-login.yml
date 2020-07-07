@@ -2,6 +2,15 @@ description: >
   This is a wrapper to simplify the login to vault, retrieves the AWS credentials, validates them and assumes an AWS role.
 
 parameters:
+  aws-cli-version:
+    default: '2'
+    description: >-
+      Which version of the CLI to install. Version "1" and "2" are currently
+      available. Will default to "2"
+    enum:
+      - '1'
+      - '2'
+    type: enum
   aws-profile-name:
     description: Profile name to be configured.
     type: string
@@ -58,11 +67,13 @@ steps:
       vault-role-id: << parameters.vault-role-id >>
       vault-secret-id: << parameters.vault-secret-id >>
   - get-aws-creds:
+      aws-cli-version: << parameters.aws-cli-version >>
       aws-profile-name: << parameters.aws-profile-name >>
       aws-region: << parameters.aws-region >>
       vault-path: << parameters.vault-path >>
       configure-default-region: << parameters.configure-default-region >>
   - assume-aws-role:
+      aws-cli-version: << parameters.aws-cli-version >>
       aws-role-arn: << parameters.aws-role-arn >>
       aws-role-session-name: << parameters.aws-role-session-name >>
       aws-source-profile-name: << parameters.aws-profile-name >>

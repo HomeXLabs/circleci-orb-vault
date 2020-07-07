@@ -3,6 +3,15 @@ description: >
   If you are building multiple images it is better to use the `ecr-login` command and then build/push the images manually.
 
 parameters:
+  aws-cli-version:
+    default: '2'
+    description: >-
+      Which version of the CLI to install. Version "1" and "2" are currently
+      available. Will default to "2"
+    enum:
+      - '1'
+      - '2'
+    type: enum
   aws-profile-name:
     description: Profile name to be configured.
     type: string
@@ -79,6 +88,7 @@ parameters:
 
 steps:
   - ecr-login:
+      aws-cli-version: << parameters.aws-cli-version >>
       aws-profile-name: << parameters.aws-profile-name >>
       aws-region: << parameters.aws-region >>
       aws-role-arn: << parameters.aws-role-arn >>
