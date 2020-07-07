@@ -65,3 +65,4 @@ steps:
       vault-version: << parameters.vault-version >>
   - aws-ecr/ecr-login:
       region: << parameters.aws-region >>
+      profile-name: "${AWS_PROFILE:-default}"
