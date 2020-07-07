@@ -63,6 +63,14 @@ steps:
       vault-role-id: << parameters.vault-role-id >>
       vault-secret-id: << parameters.vault-secret-id >>
       vault-version: << parameters.vault-version >>
+  - run:
+      name: Set AWS ECR URL
+      command: |
+        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --profile=${AWS_PROFILE:-default})
+
+        echo "AWS Region: ${<< parameters.aws-region >>}"
+        echo "AWS Account ID: ${AWS_ACCOUNT_ID}"
+        echo "export AWS_ECR_ACCOUNT_URL=${AWS_ACCOUNT_ID}.dkr.ecr.${<< parameters.aws-region >>}.amazonaws.com" >> $BASH_ENV
   - aws-ecr/ecr-login:
       region: << parameters.aws-region >>
       profile-name: "${AWS_PROFILE:-default}"
