@@ -66,11 +66,11 @@ steps:
   - run:
       name: Set AWS ECR URL
       command: |
-        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --profile=${AWS_PROFILE:-default})
+        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --profile=${AWS_PROFILE:-default} | jq '.Account')
 
         echo "AWS Region: ${<< parameters.aws-region >>}"
         echo "AWS Account ID: ${AWS_ACCOUNT_ID}"
-        echo "export AWS_ECR_ACCOUNT_URL=${AWS_ACCOUNT_ID}.dkr.ecr.${<< parameters.aws-region >>}.amazonaws.com" >> $BASH_ENV
+        echo "export AWS_ECR_ACCOUNT_URL="${AWS_ACCOUNT_ID}.dkr.ecr.${<< parameters.aws-region >>}.amazonaws.com" >> $BASH_ENV
   - aws-ecr/ecr-login:
       region: << parameters.aws-region >>
       profile-name: "${AWS_PROFILE:-default}"
