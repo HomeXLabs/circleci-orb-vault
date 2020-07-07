@@ -28,7 +28,7 @@ jobs:
       - vault/install
       - vault/login
       - vault/get-aws-creds:
-          vault-path: "aws/creds/terraform-aws"
+          vault-path: "aws/creds/vault-sbx-orb"
 
   test-aws-login:
     description: |
@@ -37,7 +37,7 @@ jobs:
       - image: circleci/node
     steps:
       - vault/aws-login:
-          vault-path: "aws/creds/terraform-aws"
+          vault-path: "aws/creds/vault-sbx-orb"
           aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
 
   test-ecr-login:
@@ -47,7 +47,7 @@ jobs:
       - image: circleci/node
     steps:
       - vault/ecr-login:
-          vault-path: "aws/creds/terraform-aws"
+          vault-path: "aws/creds/vault-sbx-orb"
           aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
 
   test-s3-cp:
@@ -61,7 +61,7 @@ jobs:
           command: |
             echo "Test" >> test.file
       - vault/s3-cp:
-          vault-path: "aws/creds/terraform-aws"
+          vault-path: "aws/creds/vault-sbx-orb"
           aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
           from: test.file
           to: s3://hx-artifacts-sbx-ci/orbs/vault/test.file
@@ -78,7 +78,7 @@ jobs:
             mkdir tests
             echo "Test" >> tests/test.file
       - vault/s3-sync:
-          vault-path: "aws/creds/terraform-aws"
+          vault-path: "aws/creds/vault-sbx-orb"
           aws-role-arn: "arn:aws:iam::546960576399:role/terraform"
           from: tests
           to: s3://hx-artifacts-sbx-ci/orbs/vault/tests
