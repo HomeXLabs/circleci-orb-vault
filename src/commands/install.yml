@@ -19,7 +19,7 @@ steps:
 
         if [ "<<parameters.vault-version >>" == "latest" ]; then
           VAULT_VERSION=$(curl -s https://releases.hashicorp.com/index.json \
-            | jq -r '[.[] | select(.name == "vault") | .versions[] | select(.version | contains("ent") | not) | select(.version | contains("beta") | not) | .version][-1]')
+            | jq -r '[.[] | select(.name == "vault") | .versions[] | select(.version | contains("ent") | not) | select(.version | contains("rc") | not) | select(.version | contains("beta") | not) | .version][-1]')
         else
           VAULT_VERSION=<<parameters.vault-version>>
         fi
