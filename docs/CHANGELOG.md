@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/HomeXLabs/circleci-orb-vault/compare/v1.2.0...v1.2.1) (2020-08-14)
+
+
+### Bug Fixes
+
+* filter our the rc releases from the vault binary ([#13](https://github.com/HomeXLabs/circleci-orb-vault/issues/13)) ([0513711](https://github.com/HomeXLabs/circleci-orb-vault/commit/05137116034ec9309c211f08d3284529a223b2e7))
+
 # [1.2.0](https://github.com/HomeXLabs/circleci-orb-vault/compare/v1.1.1...v1.2.0) (2020-07-07)
 
 
