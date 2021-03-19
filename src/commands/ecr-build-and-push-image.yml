@@ -25,6 +25,7 @@ parameters:
   aws-role-arn:
     description: Role ARN to be assumed
     type: string
+    default: ""
   aws-role-session-name:
     description: Role session name
     type: string
