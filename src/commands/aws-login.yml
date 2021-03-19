@@ -24,6 +24,7 @@ parameters:
   aws-role-arn:
     description: Role ARN to be assumed
     type: string
+    default: ""
   aws-role-session-name:
     description: Role session name
     type: string
@@ -72,10 +73,13 @@ steps:
       aws-region: << parameters.aws-region >>
       vault-path: << parameters.vault-path >>
       configure-default-region: << parameters.configure-default-region >>
-  - assume-aws-role:
-      aws-cli-version: << parameters.aws-cli-version >>
-      aws-role-arn: << parameters.aws-role-arn >>
-      aws-role-session-name: << parameters.aws-role-session-name >>
-      aws-source-profile-name: << parameters.aws-profile-name >>
-      aws-profile-name: "<< parameters.aws-profile-name>>-assume"
-      set-default-profile: << parameters.set-default-profile >>
+  - when:
+      condition: << parameters.aws-role-arn >>
+      steps:
+      - assume-aws-role:
+          aws-cli-version: << parameters.aws-cli-version >>
+          aws-role-arn: << parameters.aws-role-arn >>
+          aws-role-session-name: << parameters.aws-role-session-name >>
+          aws-source-profile-name: << parameters.aws-profile-name >>
+          aws-profile-name: "<< parameters.aws-profile-name>>-assume"
+          set-default-profile: << parameters.set-default-profile >>
