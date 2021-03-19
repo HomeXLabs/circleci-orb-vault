@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/HomeXLabs/circleci-orb-vault/compare/v1.2.1...v1.3.0) (2021-03-19)
+
+
+### Features
+
+* make the aws role arn optional ([#14](https://github.com/HomeXLabs/circleci-orb-vault/issues/14)) ([1183433](https://github.com/HomeXLabs/circleci-orb-vault/commit/11834331be99274b8707a430b89b90fced7df052))
+
 ## [1.2.1](https://github.com/HomeXLabs/circleci-orb-vault/compare/v1.2.0...v1.2.1) (2020-08-14)
 
 
