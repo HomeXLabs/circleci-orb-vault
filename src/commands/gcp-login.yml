@@ -1,0 +1,15 @@
+description: >
+  This creates a keypair file to authenticate to GCP
+
+parameters:
+  keypair_filename:
+    description: Filename of the keypair file
+    type: string
+    default: /gcp_credentials.json
+  
+  
+steps:
+  - run:
+      name: Exporting variable to file
+      command: |
+        echo $GCP_KEYFILE" >> << parameters.keypair_filename >>
